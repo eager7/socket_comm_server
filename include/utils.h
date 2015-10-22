@@ -49,22 +49,25 @@ extern "C"{
 #define CYAN_vPrintf(a,b,ARGS...)   do {  if (a) {printf(UI_CYAN     ("[PCT_%d]") b, __LINE__, ## ARGS);} } while(0)
 #define WHITE_vPrintf(a,b,ARGS...)  do {  if (a) {printf(UI_WHITE    ("[PCT_%d]") b, __LINE__, ## ARGS);} } while(0)
 
+#define ERR_vPrintf RED_vPrintf
+
+
 #define MIBF 256
-#define MDBF 1024
+#define MDBF 1024 
 #define MXBF 2048
 
 /****************************************************************************/
 /***        Type Definitions                                              ***/
 /****************************************************************************/
 typedef unsigned char       uint8;
-typedef unsigned short      uint16;
+typedef unsigned short      uint16; 
 typedef unsigned int        uint32;
 typedef unsigned long long  uint64;
 
 typedef enum
 {
     T_FALSE = 0,
-    T_TURE  = 1,
+    T_TRUE  = 1,
 }bool_t;
 
 /****************************************************************************/

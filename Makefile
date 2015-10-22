@@ -23,6 +23,7 @@ SOURCE_DIR := source
 CFLAGS += -I./include
 CFLAGS += -O2 -g -Wno-unused-but-set-variable -Wall
 PROJ_DFLAGS := -D_REENTRANT
+PROJ_LIB := -lpthread
 
 SOURCE := $(wildcard $(SOURCE_DIR)/*.c)
 OBJECTS := $(patsubst %.c,%.o,$(SOURCE))
@@ -33,7 +34,7 @@ OBJECTD := $(patsubst %.c,%.d,$(SOURCE))
 all: $(TARGET)
 
 $(TARGET):$(OBJECTS)
-	$(CC) $(PROJ_DFLAGS) $^ $(CFLAGS) -o $@
+	$(CC) $(PROJ_DFLAGS) $^ $(CFLAGS) $(PROJ_LIB) -o $@
 	
 -include $(SOURCE:.c=.d)
 
