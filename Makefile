@@ -14,5 +14,35 @@
 #
 ###########################################################################
 
-TARGET := socket_comm_server
+TARGET := Socket_Comm_Server
 
+CC := gcc
+RM := rm
+
+SOURCE_DIR := source
+CFLAGS += -I./include
+CFLAGS += -O2 -g -Wno-unused-but-set-variable -Wall
+PROJ_DFLAGS := -D_REENTRANT
+
+SOURCE := $(wildcard $(SOURCE_DIR)/*.c)
+OBJECTS := $(patsubst %.c,%.o,$(SOURCE))
+OBJECTD := $(patsubst %.c,%.d,$(SOURCE))
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET):$(OBJECTS)
+	$(CC) $(PROJ_DFLAGS) $^ $(CFLAGS) -o $@
+	
+-include $(SOURCE:.c=.d)
+
+%d:%c
+	@set -e;$(CC) -MM $(CFLAGS) $< > $@.$$$$;sed 's,\($*\)\.o[ :]*,\1.o $@ ,g' < $@.$$$$ > $@;$(RM) $@.$$$$
+
+%.o:%.c utils.h 
+	$(CC)  -I. $(CFLAGS) -c $< -o $@
+	
+clean:
+	$(RM) $(TARGET) $(OBJECTS) $(OBJECTD)
+	
