@@ -1,0 +1,2 @@
+# socket_commuication
+打算用业余时间做一套socket通信的接口出来，方便以后使用，初步定义使用TCP协议
