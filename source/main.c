@@ -35,7 +35,7 @@
 /****************************************************************************/
 int main (int argc, char *argv[])
 {
-    DBG_vPrintf(DBG_MAIN, "This is a socket comminution program");
+    DBG_vPrintf(DBG_MAIN, "This is a socket comminution program\n");
     
     return 0;
 }
