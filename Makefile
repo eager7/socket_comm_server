@@ -47,5 +47,5 @@ $(TARGET):$(OBJECTS)
 	$(CC)  -I. $(CFLAGS) -c $< -o $@
 	
 clean:
-	$(RM) $(TARGET) $(OBJECTS) $(OBJECTD)
+	$(RM) $(TARGET) $(OBJECTS) *.d*
 	

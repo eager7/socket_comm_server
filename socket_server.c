@@ -216,7 +216,7 @@ static void *SocketServerHandleThread(void *arg)
                         }
                         else    /*recv event*/
                         {
-                            YELLOW_vPrintf(DBG_SOCK, "Recv Data is --- %s\n", sSocketClient[i].csClientData);
+                            YELLOW_vPrintf(DBG_SOCK, "Recv Data is [%d]--- %s\n", i, sSocketClient[i].csClientData);
                         }
                     }
                 }
