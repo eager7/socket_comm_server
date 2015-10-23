@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include "utils.h"
 #include "socket_server.h"
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 /****************************************************************************/
 /***        Macro Definitions                                             ***/
@@ -30,6 +33,7 @@
 /****************************************************************************/
 /***        Local Function Prototypes                                     ***/
 /****************************************************************************/
+static void SignalHandler();
 
 /****************************************************************************/
 /***        Local Variables                                               ***/
@@ -42,12 +46,25 @@ int main (int argc, char *argv[])
 {
     DBG_vPrintf(DBG_MAIN, "This is a socket comminution program\n");
 
+    signal(SIGTERM, SignalHandler);
+    signal(SIGINT,  SignalHandler);
+    
     teSocketStatus eSocketStatus;
     eSocketStatus = SocketServerInit(7788,NULL);
     if(E_SOCK_OK != eSocketStatus)
     {
         ERR_vPrintf(T_TRUE, "SocketServerInit Error %d\n", eSocketStatus);
     }
+    while(1)
+    {
+        sleep(3);
+    }
+    SocketServerFinished();
     return 0;
 }
 
+static void SignalHandler()
+{
+    PURPLE_vPrintf(DBG_MAIN, "Receive a Terminal signal, Exit This Program\n");
+    exit(0);
+}

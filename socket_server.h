@@ -34,6 +34,7 @@ extern "C"{
 /***        Macro Definitions                                             ***/
 /****************************************************************************/
 #define SOCKET_LISTEN_NUM 10
+#define THREAD_SIGNAL SIGUSR1
 
 /****************************************************************************/
 /***        Type Definitions                                              ***/
@@ -46,6 +47,7 @@ typedef enum
     E_SOCK_ERROR_SETSOCK,
     E_SOCK_ERROR_BIND,
     E_SOCK_ERROR_LISTEN, 
+    E_SOCK_ERROR_PTHREAD_CREATE, 
     E_SOCK_ERROR_JOIN, 
 }teSocketStatus;
 
@@ -88,7 +90,7 @@ typedef struct _tSocektClient
 /***        Exported Functions                                            ***/
 /****************************************************************************/
 teSocketStatus SocketServerInit(int iPort, char *psNetAddress);
-teSocketStatus SocketServerFinish();
+teSocketStatus SocketServerFinished();
 
 
 #if defined __cplusplus

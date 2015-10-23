@@ -26,6 +26,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 #include "socket_server.h"
 /****************************************************************************/
@@ -62,11 +63,11 @@ teSocketStatus SocketServerInit(int iPort, char *psNetAddress)
 	server_addr.sin_family = AF_INET;  
     if(NULL != psNetAddress)
     {
-        server_addr.sin_addr.s_addr = inet_addr(psNetAddress);
+        server_addr.sin_addr.s_addr = inet_addr(psNetAddress);  /*just receive one address*/
     }
     else
     {
-        server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        server_addr.sin_addr.s_addr = htonl(INADDR_ANY);        /*receive any address*/
     }
 	server_addr.sin_port = htons(iPort);
 
@@ -90,23 +91,28 @@ teSocketStatus SocketServerInit(int iPort, char *psNetAddress)
     }
 
     //start accept thread
+    BLUE_vPrintf(DBG_SOCK, "pthread_create\n");
     if(0 != pthread_create(&sSocketServer.pthSocketServer, NULL, SocketServerHandleThread, NULL))
     {
-
+        ERR_vPrintf(T_TRUE,"pthread_create failed, %s\n", strerror(errno));  
+        return E_SOCK_ERROR_PTHREAD_CREATE;
     }
     return E_SOCK_OK;
 }
 
 teSocketStatus SocketServerFinished()
 {
-    BLUE_vPrintf(DBG_SOCK, "SocketServerFinished\n");
+    BLUE_vPrintf(DBG_SOCK, "Waiting SocketServerFinished...\n");
 
+    pthread_kill(sSocketServer.pthSocketServer, THREAD_SIGNAL);
     void *psThread_Result;
-    if(0 != pthread_join(sSocketServer.iSocketFd, &psThread_Result))
+    if(0 != pthread_join(sSocketServer.pthSocketServer, &psThread_Result))
     {
         ERR_vPrintf(T_TRUE,"phread_join socket failed, %s\n", strerror(errno));  
         return E_SOCK_ERROR_JOIN;
     }
+
+    BLUE_vPrintf(DBG_SOCK, " SocketServerFinished %s\n", (char*)psThread_Result);
 
     return E_SOCK_OK;
 }
@@ -132,6 +138,7 @@ static void *SocketServerHandleThread(void *arg)
     while(1)
     {
         fdSelect = fdAll;                       /*Copy Fd, because this Fd will be zero after*/
+        DBG_vPrintf(DBG_SOCK, "Waiting for Fd Changed\n");
         int iSelectResult = select(iListenSock + 1, &fdSelect, NULL, NULL, NULL);
         switch(iSelectResult)
         {
@@ -219,7 +226,7 @@ static void *SocketServerHandleThread(void *arg)
         
         sleep(0);
     }
-
-    return NULL;
+    DBG_vPrintf(DBG_SOCK, "Exit SocketServerHandleThread\n");
+    pthread_exit("Get Killed Signal");
 }
 
