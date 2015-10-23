@@ -19,8 +19,8 @@ TARGET := Socket_Comm_Server
 CC := gcc
 RM := rm
 
-SOURCE_DIR := source
-CFLAGS += -I./include
+SOURCE_DIR := .
+CFLAGS += -I./
 CFLAGS += -O2 -g -Wno-unused-but-set-variable -Wall
 PROJ_DFLAGS := -D_REENTRANT
 PROJ_LIB := -lpthread
@@ -39,7 +39,9 @@ $(TARGET):$(OBJECTS)
 -include $(SOURCE:.c=.d)
 
 %d:%c
-	@set -e;$(CC) -MM $(CFLAGS) $< > $@.$$$$;sed 's,\($*\)\.o[ :]*,\1.o $@ ,g' < $@.$$$$ > $@;$(RM) $@.$$$$
+	@set -e;$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
+	sed 's/.o:/.o $@:/g' < $@.$$$$ > $@; \
+	$(RM) $@.$$$$
 
 %.o:%.c utils.h 
 	$(CC)  -I. $(CFLAGS) -c $< -o $@
